@@ -1,37 +1,27 @@
 import React from "react";
-import signIn from "@/firebase/auth/signin";
+import { auth } from "@/settings/firebase_settings";
+import { createUserWithEmailAndPassword, getAuth }from 'firebase/auth'
 import { useRouter } from "next/router";
-import { useAuthContext } from "@/context/AuthContext";
-import Link from "next/link";
 
 export default function Page() {
     const [email,setEmail] = React.useState('');
     const [password,setPassword] = React.useState('');
     const router = useRouter();
-    const { user } = useAuthContext()
 
     const handleForm = async (event) => {
         event.preventDefault();
 
-        const {result,error} = await signIn(email,password);
-
-        if (error) {
-            return console.log(error);
-        }
-
-        return router.push('/admin');
+        createUserWithEmailAndPassword(auth,email,password)
+        .then(()=>{
+            alert('Account created successfully')
+            router.push('/auth/signin')
+        }).catch((e)=> console.error(e))
     }
-
-    React.useEffect(()=>{
-        if(user !== null) {
-            router.push('/admin');
-        }
-    },[])
 
     return (
         <main className="w-full h-screen flex justify-center items-center px-4 sm:px-0">
             <div className="w-[480px] flex flex-col shadow-md border boreder-blue-400 rounded-lg gap-5 p-4">
-                <h1 className="text-3xl text-center text-blue-800">Sign In</h1>
+                <h1 className="text-3xl text-center text-blue-800">Sign up</h1>
                 <form className="bg-white flex flex-col gap-3 p-4 rounded-md" onSubmit={handleForm}>
                     <input 
                     name="email"
@@ -49,12 +39,8 @@ export default function Page() {
                     onChange={(e) => setPassword(e.target.value)}
                     />
                     <button type="submit" className="max-w-[160px] h-12 bg-blue-800 rounded-lg text-white font-bold"
-                    >Login</button>
+                    >Create Account</button>
                 </form>
-                <p>
-                    Forgot password? 
-                    <Link href='/signin/password-reset'>Click here to reset.</Link>
-                </p>
             </div>
         </main>
     )

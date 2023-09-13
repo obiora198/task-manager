@@ -3,17 +3,23 @@ import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { getAuth,signOut } from "firebase/auth";
 
-function Page() {
+export default function Page() {
     const { user } = useAuthContext()
     const router = useRouter()
     const auth = getAuth()
 
     const handleSignOut = () => {
-        signOut(auth).then().catch((e)=>{console.error(e)})
+        signOut(auth)
+        .then(()=>{
+            console.log('you signed out');
+        })
+        .catch((e)=>{console.error(e)})
     }
 
     React.useEffect(() => {
-        if (user == null) router.push("/signin")
+        if (user == null) {
+            router.push("/auth/signin")
+        }
     }, [user])
 
     return (
@@ -23,5 +29,3 @@ function Page() {
         </>
     );
 }
-
-export default Page;
