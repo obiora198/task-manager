@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "@/settings/firebase_settings";
+import { auth } from "@/settings/firebase.config";
 import { createUserWithEmailAndPassword, getAuth }from 'firebase/auth'
 import { useRouter } from "next/router";
 

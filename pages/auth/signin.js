@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "@/settings/firebase_settings";
+import { auth } from "@/settings/firebase.config";
 import { signInWithEmailAndPassword }from 'firebase/auth'
 import { useRouter } from "next/router";
 import { useAuthContext } from "@/context/AuthContext";
@@ -9,8 +9,7 @@ export default function Page(){
     const [email,setEmail] = React.useState('');
     const [password,setPassword] = React.useState('');
     const router = useRouter();
-    // const { user } = useAuthContext();
-    const user = auth.currentUser
+    const { user } = useAuthContext();
 
     const handleForm = async (event) => {
         event.preventDefault();
