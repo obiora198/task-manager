@@ -4,14 +4,16 @@ import { Button,TextField,IconButton } from "@mui/material";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { doc,deleteDoc,updateDoc } from "firebase/firestore";
 import { database } from "@/settings/firebase.config";
-import { Menu,MenuItem } from "@mui/material";
+import { useAuthContext } from "@/context/AuthContext";
 
 
-export default function TaskDisplay({title,description,dueDate,taskId}) {
+export default function TaskDisplay({title,description,dueDate,taskId,docUid}) {
     const [taskTitle,setTaskTitle] = React.useState('');
     const [taskDesc,setTaskDesc] = React.useState('');
     const [taskDueDate,setTaskDueDate] = React.useState('');
     const [taskComplete,setTaskComplete] = React.useState(false);
+
+    const { user } = useAuthContext();
 
     //DELETE DIALOG CONTROL >>>> START
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -69,7 +71,7 @@ export default function TaskDisplay({title,description,dueDate,taskId}) {
             <div className="w-full flex items-center justify-around">
                 <Button 
                 variant='outlined'
-                // className=' w-[100px]'
+                className={user.uid !== docUid ? null : 'hidden'}
                 onClick={handleClickOpenUpdateDialog}
                 >Edit</Button>
 
@@ -77,6 +79,7 @@ export default function TaskDisplay({title,description,dueDate,taskId}) {
                 variant='outlined'
                 color="error"
                 onClick={handleClickOpenDeleteDialog}
+                className={user.uid !== docUid ? null : 'hidden'}
                 >Delete</Button>
             </div>
         </div>  
@@ -105,17 +108,17 @@ export default function TaskDisplay({title,description,dueDate,taskId}) {
             size="small"
             className='w-full'
             value={title}
-            onChange={(text) => setTaskTitle(text.target.value)}/>
+            onChange={(e) => setTaskTitle(e.target.value)}/>
             <TextField 
             multiline={true}
             className='w-full'
             value={description}
-            onChange={(text) => setTaskDesc(text.target.value)}/>
+            onChange={(e) => setTaskDesc(e.target.value)}/>
             <TextField 
             multiline={true}
             className='w-full'
             value={dueDate}
-            onChange={(text) => setTaskDueDate(text.target.value)}/>
+            onChange={(e) => setTaskDueDate(e.target.value)}/>
 
            <div className="flex flex-col">
            <Button 

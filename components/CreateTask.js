@@ -2,6 +2,7 @@ import React from "react";
 import { database } from "@/settings/firebase.config";
 import { collection,addDoc } from "firebase/firestore";
 import { TextField,Button } from "@mui/material";
+import { useAuthContext } from "@/context/AuthContext";
 
 
 
@@ -9,6 +10,8 @@ export default function CreateTask() {
     const [title,setTitle] = React.useState('');
     const [description,setDescription] = React.useState('');
     const [dueDate,setDueDate] = React.useState('');
+
+    const { user } = useAuthContext();
 
     
 
@@ -18,6 +21,7 @@ export default function CreateTask() {
             description:description,
             dueDate:dueDate,
             completed:false,
+            authorId:user.uid,
         })
         .then(() => {
             setTitle('')
@@ -50,7 +54,7 @@ export default function CreateTask() {
 
                         <TextField
                         size="small" 
-                        placeholder="Date due eg dd/mm/yyyy" 
+                        placeholder="Date due eg MM/DD/YYYY" 
                         value={dueDate}
                         onChange={(e)=> setDueDate(e.target.value)}/>
 

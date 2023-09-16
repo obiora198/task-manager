@@ -2,8 +2,9 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import TuneIcon from '@mui/icons-material/Tune';
 
-export default function Filter({filterArray,}) {
+export default function Filter({filterArray,callback1,callback2}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -14,25 +15,31 @@ export default function Filter({filterArray,}) {
     setAnchorEl(null);
   };
   
-  const filterByComplete = (filterArray) => {
+  const filterByComplete = () => {
     const filteredArray = filterArray.filter(item => {
         if(item.data.completed == true){
             return item
         }
     })
 
-    return filteredArray
+    callback1(filteredArray);
   };
 
-  const filterByDueDate = (filterArray) => {
+  const filterByDueDate = () => {
     const sortedArray = filterArray.sort((item1,item2) => {
-        item1.data.dueDate > item2.data.dueDate ? 1 
-        : item1.data.dueDate < item2.data.dueDate ? -1 
+        let date1 = new Date(item1.data.dueDate).getTime();
+        let date2 = new Date(item2.data.dueDate).getTime();
+        date1 > date2 ? 1 
+        : date1 < date2 ? -1 
         : 0 ;
     })
 
-    return sortedArray
+    callback1(sortedArray);
   };
+
+  const clearFilter = () => {
+    callback2();
+  }
 
   return (
     <div>
@@ -43,6 +50,7 @@ export default function Filter({filterArray,}) {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
+        <TuneIcon />
         Filter
       </Button>
       <Menu
@@ -62,6 +70,7 @@ export default function Filter({filterArray,}) {
       >
         <MenuItem onClick={filterByDueDate}>By due date</MenuItem>
         <MenuItem onClick={filterByComplete}>By completion status</MenuItem>
+        <MenuItem onClick={clearFilter}>Clear filter</MenuItem>
         
       </Menu>
     </div>

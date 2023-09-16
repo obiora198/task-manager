@@ -2,22 +2,35 @@ import React from "react";
 import { auth } from "@/settings/firebase.config";
 import { createUserWithEmailAndPassword, getAuth }from 'firebase/auth'
 import { useRouter } from "next/router";
+import { collection,addDoc } from "firebase/firestore";
+import { database } from "@/settings/firebase.config";
 
 export default function Page() {
     const [email,setEmail] = React.useState('');
     const [password,setPassword] = React.useState('');
     const router = useRouter();
+    const [user,setUser] = React.useState('');
 
     const handleForm = async (event) => {
         event.preventDefault();
 
-        createUserWithEmailAndPassword(auth,email,password)
-        .then(()=>{
+        await createUserWithEmailAndPassword(auth,email,password)
+        .then((userCredential)=>{
+            const handleCreateUser = async () => {
+                const res = await addDoc(collection(database,'users'),{
+                    userUID:userCredential.user.uid,
+                    userEmail:userCredential.user.email,
+                }).then(()=>{
+                    null
+                }).catch(e => console.error(e))  
+            }
+            handleCreateUser()
+
             alert('Account created successfully')
             router.push('/auth/signin')
         }).catch((e)=> console.error(e))
     }
-
+    
     return (
         <main className="w-full h-screen flex justify-center items-center px-4 sm:px-0">
             <div className="w-[480px] flex flex-col shadow-md border boreder-blue-400 rounded-lg gap-5 p-4">

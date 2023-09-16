@@ -15,7 +15,7 @@ export default function Page(){
         event.preventDefault();
         signInWithEmailAndPassword(auth,email,password)
         .then(()=>{
-            router.push('/admin');
+            router.push('/');
         })
         .catch((e) => console.error(e))
 
@@ -23,7 +23,7 @@ export default function Page(){
     
     React.useEffect(()=>{
         if(user !== null) {
-            router.push('/admin');
+            router.push('/');
         }
     },[])
 
