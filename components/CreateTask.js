@@ -12,6 +12,12 @@ export default function CreateTask() {
     const [dueDate,setDueDate] = React.useState('');
 
     const { user } = useAuthContext();
+    const parseDate = (dateObject) => {
+        const dateArray = dateObject.split('/');
+        const date = new Date(+dateArray[2], dateArray[1]-1, +dateArray[0]);
+
+        return date.toDateString();
+    }
 
     
 
@@ -19,9 +25,10 @@ export default function CreateTask() {
         const response = await addDoc(collection(database,'tasks'),{
             title:title,
             description:description,
-            dueDate:dueDate,
+            dueDate: parseDate(dueDate),
             completed:false,
             authorId:user.uid,
+            authorEmail:user.email,
         })
         .then(() => {
             setTitle('')
@@ -54,7 +61,7 @@ export default function CreateTask() {
 
                         <TextField
                         size="small" 
-                        placeholder="Date due eg MM/DD/YYYY" 
+                        placeholder="Date due eg DD/MM/YYYY" 
                         value={dueDate}
                         onChange={(e)=> setDueDate(e.target.value)}/>
 
