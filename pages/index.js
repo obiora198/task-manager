@@ -17,6 +17,8 @@ import Avatar from '@mui/material/Avatar';
 export default function Page() {
     const { user } = useAuthContext()
     const [tasks,setTasks] = React.useState([]);
+    const [filter,setFilter] = React.useState(false);
+    const [filteredTasks,setFilteredTasks] = React.useState([]);
     const router = useRouter()
 
     const handleSignOut = () => {
@@ -51,7 +53,6 @@ export default function Page() {
         }
     }, [])
 
-    // console.log(user.email);
 
     return (
         <>
@@ -60,7 +61,7 @@ export default function Page() {
                 <div className="w-[450px] h-screen flex flex-col items-center px-4">
                     <div className="w-[100px] h-[100px] flex items-center justify-center bg-gray-100 rounded-full m-4">
                         <Avatar>
-                            {user.displayName ? user.displayName : user.email[0]}
+                            {user?.displayName ? user.displayName : user?.email[0]}
                         </Avatar>
                     </div>
                     <div className="w-full h-full flex flex-col justify-around">
@@ -82,24 +83,17 @@ export default function Page() {
                 <div className="w-full h-screen bg-gray-200 overflow-scroll">
                     <div className="w-full h-[100px] bg-white flex items-center p-4 mb-4">
                         <Filter 
-                        filterArray={tasks}
-                        callback1={setTasks}
-                        callback2={getTasks}
+                        tasks={tasks}
+                        setTasks={setFilteredTasks}
+                        setFilter={setFilter}
                         />
                     </div>
                     <div className="w-full flex flex-col items-center gap-4 pb-4">
                         <CreateTask />
 
                         {
-                            tasks.map(task => (
-                                // <div key={Math.random()}>
-                                //     <TaskDisplay 
-                                //     // taskId={task.id}
-                                //     title='title'
-                                //     description='description'
-                                //     dueDate='00/12/2020'
-                                //     />
-                                // </div>
+                            filter ? 
+                            filteredTasks.map(task => (
                                 <div key={task.id}>
                                     <TaskDisplay 
                                     taskId={task.id}
@@ -107,6 +101,21 @@ export default function Page() {
                                     description={task.data.description}
                                     dueDate={task.data.dueDate}
                                     docUid={task.data.authorId}
+                                    completed={task.data.completed}
+                                    author={task.data.authorEmail}
+                                    />
+                                </div>
+                            )) :
+                            tasks.map(task => (
+                                <div key={task.id}>
+                                    <TaskDisplay 
+                                    taskId={task.id}
+                                    title={task.data.title}
+                                    description={task.data.description}
+                                    dueDate={task.data.dueDate}
+                                    docUid={task.data.authorId}
+                                    completed={task.data.completed}
+                                    author={task.data.authorEmail}
                                     />
                                 </div>
                             ))
