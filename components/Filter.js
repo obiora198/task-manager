@@ -4,7 +4,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TuneIcon from '@mui/icons-material/Tune';
 
-export default function Filter({filterArray,callback1,callback2}) {
+export default function Filter({tasks,setTasks,setFilter}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -16,29 +16,32 @@ export default function Filter({filterArray,callback1,callback2}) {
   };
   
   const filterByComplete = () => {
-    const filteredArray = filterArray.filter(item => {
-        if(item.data.completed == true){
-            return item
-        }
+    setFilter(true);
+    
+    const filteredArray = tasks.filter(item => {
+      if(item.data.completed == true){
+        return item
+      }
     })
-
-    callback1(filteredArray);
+    
+    setTasks(filteredArray);
   };
 
   const filterByDueDate = () => {
-    const sortedArray = filterArray.sort((item1,item2) => {
-        let date1 = new Date(item1.data.dueDate).getTime();
-        let date2 = new Date(item2.data.dueDate).getTime();
-        date1 > date2 ? 1 
-        : date1 < date2 ? -1 
-        : 0 ;
+    setFilter(true);
+    
+    const sortedTasks = tasks.sort((item1,item2) => {
+      let date1 = new Date(item1.data.dueDate);
+      let date2 = new Date(item2.data.dueDate);
+      return date1 > date2 ? 1 : -1;
     })
-
-    callback1(sortedArray);
+    
+    setTasks(sortedTasks);
+    // console.log(tasks);
   };
 
   const clearFilter = () => {
-    callback2();
+    setFilter(false);
   }
 
   return (
