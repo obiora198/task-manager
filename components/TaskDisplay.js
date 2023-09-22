@@ -7,11 +7,11 @@ import { database } from "@/settings/firebase.config";
 import { useAuthContext } from "@/context/AuthContext";
 
 
-export default function TaskDisplay({title,description,dueDate,taskId,docUid}) {
-    const [taskTitle,setTaskTitle] = React.useState('');
-    const [taskDesc,setTaskDesc] = React.useState('');
-    const [taskDueDate,setTaskDueDate] = React.useState('');
-    const [taskComplete,setTaskComplete] = React.useState(false);
+export default function TaskDisplay({title,description,dueDate,completed,author,taskId,docUid}) {
+    const [taskTitle,setTaskTitle] = React.useState(title);
+    const [taskDesc,setTaskDesc] = React.useState(description);
+    const [taskDueDate,setTaskDueDate] = React.useState(dueDate);
+    const [taskComplete,setTaskComplete] = React.useState(completed);
 
     const { user } = useAuthContext();
 
@@ -38,6 +38,13 @@ export default function TaskDisplay({title,description,dueDate,taskId,docUid}) {
             console.error(e);
         })
     }
+
+    const parseDate = (dateObject) => {
+        const dateArray = dateObject.split('/');
+        const date = new Date(+dateArray[2], dateArray[1]-1, +dateArray[0]);
+
+        return date.toDateString();
+    }
     
     // FUNCTION TO UPDATE POST 
     const handleUpdateTask = async () => {
@@ -45,7 +52,7 @@ export default function TaskDisplay({title,description,dueDate,taskId,docUid}) {
         await updateDoc(doc(database, 'tasks', taskId),{
             title:taskTitle,
             description:taskDesc,
-            dueDate:taskDueDate,
+            dueDate:parseDate(taskDueDate),
             completed:taskComplete,
         },
         {
@@ -59,19 +66,29 @@ export default function TaskDisplay({title,description,dueDate,taskId,docUid}) {
         })
     }
 
+    // console.log(user.uid, docUid);
+
     return (
         <>
         <div className="w-[500px] bg-white flex flex-col items-center gap-2 rounded-md shadow-md p-4">
             <div className="w-full flex flex-col gap-2 divide-y rounded-md ">
-                <p className="text-2xl font-bold">{title}</p>
+                <span className="flex justify-between items-center">
+                    <p className="text-2xl font-bold">{title}</p>
+                    <span className="flex flex-col text-sm">
+                        <small>Created by:</small>
+                        <small>{author}</small>
+                    </span>
+                </span>
                 <p className="text-xl">{description}</p>
-                <p className="text-sm ">Date due: {dueDate}</p>
+                <p className="flex justify-between p-4">
+                    <span className="text-sm">Date due: {dueDate}</span>
+                    <span className="text-green-600 underline">{completed ? 'Completed' : null}</span>
+                </p>
             </div>
             <hr />
-            <div className="w-full flex items-center justify-around">
+            <div className={user.uid != docUid ? 'hidden' : "w-full flex items-center justify-around"}>
                 <Button 
                 variant='outlined'
-                className={user.uid !== docUid ? null : 'hidden'}
                 onClick={handleClickOpenUpdateDialog}
                 >Edit</Button>
 
@@ -79,7 +96,6 @@ export default function TaskDisplay({title,description,dueDate,taskId,docUid}) {
                 variant='outlined'
                 color="error"
                 onClick={handleClickOpenDeleteDialog}
-                className={user.uid !== docUid ? null : 'hidden'}
                 >Delete</Button>
             </div>
         </div>  
@@ -104,20 +120,23 @@ export default function TaskDisplay({title,description,dueDate,taskId,docUid}) {
         openProp={openUpdateDialog} 
         handleCloseProp={handleCloseUpdateDialog} 
         title='Edit Task'>
-            <TextField 
+            <TextField
+            placeholder="Title" 
             size="small"
             className='w-full'
-            value={title}
+            value={taskTitle}
             onChange={(e) => setTaskTitle(e.target.value)}/>
             <TextField 
             multiline={true}
+            placeholder="Description..."
             className='w-full'
-            value={description}
+            value={taskDesc}
             onChange={(e) => setTaskDesc(e.target.value)}/>
             <TextField 
-            multiline={true}
+            placeholder="Date due eg DD/MM/YYYY"
+            size="small"
             className='w-full'
-            value={dueDate}
+            value={taskDueDate}
             onChange={(e) => setTaskDueDate(e.target.value)}/>
 
            <div className="flex flex-col">
