@@ -5,13 +5,15 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { doc,deleteDoc,updateDoc } from "firebase/firestore";
 import { database } from "@/settings/firebase.config";
 import { useAuthContext } from "@/context/AuthContext";
+import ListAllUsers from "./ListAllUsers";
 
 
-export default function TaskDisplay({title,description,dueDate,completed,author,taskId,docUid}) {
+export default function TaskDisplay({title,description,dueDate,assigned,completed,author,taskId,docUid}) {
     const [taskTitle,setTaskTitle] = React.useState(title);
     const [taskDesc,setTaskDesc] = React.useState(description);
     const [taskDueDate,setTaskDueDate] = React.useState(dueDate);
     const [taskComplete,setTaskComplete] = React.useState(completed);
+    const [assignedTo,setAssignedTo] = React.useState(assigned);
 
     const { user } = useAuthContext();
 
@@ -38,13 +40,6 @@ export default function TaskDisplay({title,description,dueDate,completed,author,
             console.error(e);
         })
     }
-
-    const parseDate = (dateObject) => {
-        const dateArray = dateObject.split('/');
-        const date = new Date(+dateArray[2], dateArray[1]-1, +dateArray[0]);
-
-        return date.toDateString();
-    }
     
     // FUNCTION TO UPDATE POST 
     const handleUpdateTask = async () => {
@@ -52,8 +47,9 @@ export default function TaskDisplay({title,description,dueDate,completed,author,
         await updateDoc(doc(database, 'tasks', taskId),{
             title:taskTitle,
             description:taskDesc,
-            dueDate:parseDate(taskDueDate),
+            dueDate:taskDueDate,
             completed:taskComplete,
+            assignedTo:assignedTo,
         },
         {
             merge:true,
@@ -81,7 +77,10 @@ export default function TaskDisplay({title,description,dueDate,completed,author,
                 </span>
                 <p className="text-xl">{description}</p>
                 <p className="flex justify-between p-4">
-                    <span className="text-sm">Date due: {dueDate}</span>
+                    <div className="flex flex-col">
+                        <span className="text-sm">Asigned to: {assigned}</span>
+                        <span className="text-sm">Date due: {dueDate}</span>
+                    </div>
                     <span className="text-green-600 underline">{completed ? 'Completed' : null}</span>
                 </p>
             </div>
@@ -138,6 +137,12 @@ export default function TaskDisplay({title,description,dueDate,completed,author,
             className='w-full'
             value={taskDueDate}
             onChange={(e) => setTaskDueDate(e.target.value)}/>
+
+            <div className="flex items-center gap-4">
+                <span>Asign Task:</span>
+                <ListAllUsers
+                setAssigned={setAssignedTo}/>
+            </div>
 
            <div className="flex flex-col">
            <Button 

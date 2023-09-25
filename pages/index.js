@@ -11,6 +11,7 @@ import { database } from "@/settings/firebase.config";
 import Filter from "@/components/Filter";
 import { LogoutOutlined, SpaceDashboardRounded } from "@mui/icons-material";
 import Avatar from '@mui/material/Avatar';
+import { parseDate } from "@/components/assets";
 
 
 
@@ -99,10 +100,11 @@ export default function Page() {
                                     taskId={task.id}
                                     title={task.data.title}
                                     description={task.data.description}
-                                    dueDate={task.data.dueDate}
+                                    dueDate={parseDate(task.data.dueDate)}
                                     docUid={task.data.authorId}
                                     completed={task.data.completed}
                                     author={task.data.authorEmail}
+                                    assigned={task.data.assignedTo}
                                     />
                                 </div>
                             )) :
@@ -112,10 +114,11 @@ export default function Page() {
                                     taskId={task.id}
                                     title={task.data.title}
                                     description={task.data.description}
-                                    dueDate={task.data.dueDate}
+                                    dueDate={parseDate(task.data.dueDate)}
                                     docUid={task.data.authorId}
                                     completed={task.data.completed}
                                     author={task.data.authorEmail}
+                                    assigned={task.data.assignedTo}
                                     />
                                 </div>
                             ))
