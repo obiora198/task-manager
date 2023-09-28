@@ -66,7 +66,7 @@ export default function TaskDisplay({title,description,dueDate,assigned,complete
 
     return (
         <>
-        <div className="w-[500px] bg-white flex flex-col items-center gap-2 rounded-md shadow-md p-4">
+        <div className="w-full sm:w-[500px] bg-white flex flex-col items-center gap-2 rounded-md shadow-md p-4">
             <div className="w-full flex flex-col gap-2 divide-y rounded-md ">
                 <span className="flex justify-between items-center">
                     <p className="text-2xl font-bold">{title}</p>

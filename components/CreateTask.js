@@ -56,7 +56,7 @@ export default function CreateTask() {
     }
 
     return(
-        <div className='w-[500px] bg-white flex flex-col justify-center items-center rounded-md shadow-md p-4'>
+        <div className='w-full sm:w-[500px] bg-white flex flex-col justify-center items-center rounded-md shadow-md p-4'>
             <h1 className="text-2xl text-blue-800">Create new task</h1>
             <div className='w-full flex flex-col gap-2'>
                 <TextField 

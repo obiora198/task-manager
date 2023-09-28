@@ -59,13 +59,13 @@ export default function Page() {
         <>
             <div className="flex flex-col sm:flex-row">
                 {/* navbar */}
-                <div className="w-[450px] h-screen flex flex-col items-center px-4">
+                <div className="w-full sm:w-[450px] sm:h-screen flex sm:flex-col items-center px-4">
                     <div className="w-[100px] h-[100px] flex items-center justify-center bg-gray-100 rounded-full m-4">
                         <Avatar>
                             {user?.displayName ? user.displayName : user?.email[0]}
                         </Avatar>
                     </div>
-                    <div className="w-full h-full flex flex-col justify-around">
+                    <div className="w-full h-[50px] sm:h-full flex sm:flex-col justify-around">
                         <Link href='#' className="w-full bg-blue-400 flex items-center gap-4 hover:bg-blue-200 text-white rounded-md p-4">
                             <SpaceDashboardRounded />
                             Dashboard
@@ -92,7 +92,7 @@ export default function Page() {
                         <Notification
                         className='p-4'/>
                     </div>
-                    <div className="w-full flex flex-col items-center gap-4 pb-4">
+                    <div className="w-full flex flex-col items-center gap-4 p-4">
                         <CreateTask />
 
                         {
