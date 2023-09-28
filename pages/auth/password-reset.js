@@ -1,7 +1,7 @@
 import React from "react";
 import { sendPasswordResetEmail } from "firebase/auth"
 import { useRouter } from "next/router";
-import { auth } from "@/settings/firebase_settings";
+import { auth } from "@/settings/firebase.config";
 
 
 export default function PasswordReset() {
