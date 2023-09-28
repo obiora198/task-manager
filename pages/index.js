@@ -3,11 +3,11 @@ import Link from "next/link";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { signOut } from "firebase/auth";
-import { auth } from "@/settings/firebase.config";
+import { auth,database } from "@/settings/firebase.config";
 import CreateTask from "@/components/CreateTask";
 import TaskDisplay from "@/components/TaskDisplay";
+import Notification from "@/components/Notification";
 import { getDocs,collection } from "firebase/firestore";
-import { database } from "@/settings/firebase.config";
 import Filter from "@/components/Filter";
 import { LogoutOutlined, SpaceDashboardRounded } from "@mui/icons-material";
 import Avatar from '@mui/material/Avatar';
@@ -82,19 +82,25 @@ export default function Page() {
 
                 {/* main window */}
                 <div className="w-full h-screen bg-gray-200 overflow-scroll">
-                    <div className="w-full h-[100px] bg-white flex items-center p-4 mb-4">
+                    <div className="w-full h-[100px] bg-white flex items-center justify-between p-4 mb-4">
                         <Filter 
                         tasks={tasks}
                         setTasks={setFilteredTasks}
                         setFilter={setFilter}
                         />
+
+                        <Notification
+                        className='p-4'/>
                     </div>
                     <div className="w-full flex flex-col items-center gap-4 pb-4">
                         <CreateTask />
 
                         {
+                            (
                             filter ? 
-                            filteredTasks.map(task => (
+                            filteredTasks : 
+                            tasks
+                            ).map(task => (
                                 <div key={task.id}>
                                     <TaskDisplay 
                                     taskId={task.id}
@@ -107,21 +113,7 @@ export default function Page() {
                                     assigned={task.data.assignedTo}
                                     />
                                 </div>
-                            )) :
-                            tasks.map(task => (
-                                <div key={task.id}>
-                                    <TaskDisplay 
-                                    taskId={task.id}
-                                    title={task.data.title}
-                                    description={task.data.description}
-                                    dueDate={parseDate(task.data.dueDate)}
-                                    docUid={task.data.authorId}
-                                    completed={task.data.completed}
-                                    author={task.data.authorEmail}
-                                    assigned={task.data.assignedTo}
-                                    />
-                                </div>
-                            ))
+                            )) 
                         }
                     </div>
                     

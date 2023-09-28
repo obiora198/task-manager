@@ -18,9 +18,13 @@ export default function CreateTask() {
     //send notifications to user after assigning task
     const sendNotification = async () => {
         const response = await addDoc(collection(database,'notifications'),{
-            title:'You have been assigned a task!',
+            headline:'You have been assigned a task!',
+            title:title,
             description:description,
             dueDate: dueDate,
+            assignedTo:assignedTo,
+            createdAt:new Date().getTime(),
+            read:false,
         })
         .then(() => null)
         .catch(error => console.error(error)); 
@@ -40,6 +44,7 @@ export default function CreateTask() {
             authorEmail:user.email,
         })
         .then(() => {
+            sendNotification()
             setTitle('')
             setDescription('')
             setDueDate('')
